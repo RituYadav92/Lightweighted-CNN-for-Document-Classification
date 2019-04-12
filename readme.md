@@ -1,5 +1,3 @@
-Code Forked from : https://github.com/cahya-wirawan/cnn-text-classification-tf
-
 ### Train the model by running 
 ./train.py 
 
@@ -8,8 +6,6 @@ Code Forked from : https://github.com/cahya-wirawan/cnn-text-classification-tf
 
 
 ### Evaluate Model
-To evaluate a pretrained model by me, download it from the link http://www.mediafire.com/folder/5n7i90i2kfaz8/trained_model
-and keep in the 'runs' folder
 
 and, run below command 
 
