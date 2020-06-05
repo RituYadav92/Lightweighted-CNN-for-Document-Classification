@@ -1,3 +1,5 @@
+
+#TEST CODE FIRST CLEAN UP AND THEN MAKE IT PUBLIC
 ### Train the model by running 
 ```python train.py ```
 
