@@ -52,7 +52,7 @@ datasets = None
 dataset_name = cfg["datasets"]["default"]
 print('dataset_name: ', dataset_name)
 
-read_file = 'data/test_pol_data/tweet_list'
+read_file = 'data/test_data_txtfiles/'
 
 if FLAGS.out_test:
     # x_raw = ["sonntagsfrage bundestagswahl infratest dimapard cducsu 37 spd 25 grü 11 afd 10 lin 8 fdp 4", "die mehrheit der muslime beherrscht kunstvoll ihr rhetorisches spiel sie stellen die muslime als die ewigen opfer da"]
