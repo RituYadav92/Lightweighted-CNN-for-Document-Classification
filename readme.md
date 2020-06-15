@@ -37,3 +37,6 @@ To prediction on new test data, make sure evaluate model is working , Then run b
 
 ### Link to the paper
 For more details please go through my paper at link: https://arxiv.org/pdf/2004.07922.pdf
+
+### References :
+1. https://github.com/dennybritz/cnn-text-classification-tf
