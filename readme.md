@@ -36,6 +36,4 @@ To prediction on new test data, make sure evaluate model is working , Then run b
 ```python test.py --out_test --checkpoint_dir="./runs/trained_model/checkpoints/" --test_dir="path to test data"```
 
 ### Link to the paper
-For more details please go through my paper at below mentioned link.
-
-```https://arxiv.org/pdf/2004.07922.pdf```
+For more details please go through my paper at link: https://arxiv.org/pdf/2004.07922.pdf
