@@ -1,10 +1,38 @@
+Light-Weighted CNN for Text Classification
 
-#TEST CODE FIRST CLEAN UP AND THEN MAKE IT PUBLIC
-### Train the model by running 
-```python train.py ```
+### Dataset Used
+Tobacco-3482
+```['ADVE', 'Email', 'Form', 'Letter', 'Memo', 'News', 'Note', 'Report', 'Resume', 'Scientific']```
+
+### Train Model
+#### To train on Optimized Text CNN
+```python ADAM_optmized_train.py```
+
+#### Lightweight Text CNN
+```python singleADAM_LW_train.py```
+
+#### Lightweight TextCNN with Dual Optimizer
+Switches from Adam to SGD when a triggering condition is satisfied.
+```python SWAT_LW_train.py```
+
+#### Optional arguments:
+ ```python train.py --help```
+
 
 ### Evaluate Model
+
+To evaluate, run below command 
 
 ```python eval.py --eval_train --checkpoint_dir="./runs/trained_model/checkpoints/"```
 
 To use your own data, change the eval.py script to load your data.
+
+### Test Model 
+To prediction on new test data, make sure evaluate model is working , Then run below :
+
+```python test.py --out_test --checkpoint_dir="./runs/trained_model/checkpoints/" --test_dir="path to test data"```
+
+### Link to the paper
+For more details please go through my paper at below mentioned link.
+
+```https://arxiv.org/pdf/2004.07922.pdf```

@@ -1,0 +1,36 @@
+word_embeddings:
+  # Two types of word embedding algorithm (word2vec and glove) are supported.
+  # Just set the default to empty string to disable the word embeddings
+  default: word2vec
+  word2vec:
+    path: ../word_embedding/embed_tweets_de_200M_200D/embedding_file
+    dimension: 200
+    binary: False
+  glove:
+    path: ../../data/glove.6B.100d.txt
+    dimension: 100
+    length: 400000
+
+datasets:
+  # Support currently datasets
+  default: tobacco
+  tobacco:
+    parent_dir: "data/tobacco-data"  
+  localdata:
+    # Load text files with categories as subfolder names.
+    # Individual samples are assumed to be files stored
+    # a two levels folder structure such as the following:
+    # container_folder/
+    #   category_1_folder/
+    #     file_1.txt file_2.txt ... file_42.txt
+    #   category_2_folder/
+    #     file_43.txt file_44.txt ...
+    #
+    # As an example, a SentenceCorpus dataset from
+    # https://archive.ics.uci.edu/ml/datasets/Sentence+Classification
+    # has been used. The dataset includes following 3 domains:
+    # arxiv, jdm and plos
+    container_path: ../../data/input/SentenceCorpus
+    categories:
+    shuffle: True
+    random_state: 42

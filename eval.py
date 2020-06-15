@@ -3,12 +3,16 @@
 import tensorflow as tf
 import numpy as np
 import os
-import data_helpers
+from train.helper import data_helpers
 from tensorflow.contrib import learn
 import csv
 from sklearn import metrics
 import yaml
+import sys
 
+ROOT_DIR = os.path.abspath("../")
+sys.path.append(ROOT_DIR)
+    
 
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
@@ -18,62 +22,45 @@ def softmax(x):
     exp_x = np.exp(x - max_x)
     return exp_x / np.sum(exp_x, axis=1).reshape((-1, 1))
 
-with open("config.yml", 'r') as ymlfile:
-    cfg = yaml.load(ymlfile)
-
 # Parameters
 # ==================================================
-
-# Data Parameters
-
 # Eval Parameters
-tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_dir", "", "Checkpoint directory from training run")
-tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
+tf.compat.v1.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
+tf.compat.v1.flags.DEFINE_string("checkpoint_dir", "", "Checkpoint directory from training run")
+tf.compat.v1.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
 
 # Misc Parameters
-tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
-tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
+tf.compat.v1.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
+tf.compat.v1.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on devices")
 
+FLAGS = tf.compat.v1.flags.FLAGS
 
-FLAGS = tf.flags.FLAGS
-FLAGS._parse_flags()
-print("\nParameters:")
-for attr, value in sorted(FLAGS.__flags.items()):
-    print("{}={}".format(attr.upper(), value))
-print("")
+YML_PATH = os.path.join(ROOT_DIR, "train/helper/config.yml")
+print("***********************YML_PATH", YML_PATH)
+
+with open(YML_PATH, 'r') as ymlfile:
+    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 datasets = None
 
-# CHANGE THIS: Load data. Load your own data here
+# CHANGE THIS: if you want to load your own data.
 dataset_name = cfg["datasets"]["default"]
 print('dataset_name: ', dataset_name)
 if FLAGS.eval_train:
-    if dataset_name == "mrpolarity":
-        datasets = data_helpers.get_datasets_mrpolarity(cfg["datasets"][dataset_name]["positive_data_file"]["path"],
-                                             cfg["datasets"][dataset_name]["negative_data_file"]["path"])
-    elif dataset_name == "20newsgroup":
-        datasets = data_helpers.get_datasets_20newsgroup(subset="test",
-                                              categories=cfg["datasets"][dataset_name]["categories"],
-                                              shuffle=cfg["datasets"][dataset_name]["shuffle"],
-                                              random_state=cfg["datasets"][dataset_name]["random_state"])
-    elif dataset_name == "political_parties":
-        print('Loading  political paries')
-        datasets = data_helpers.get_datasets_political_parties()
+    if dataset_name == "tobacco":
+        print("LOading data !")
+        datasets = data_helpers.get_datasets_tobacco()
+    elif dataset_name == "localdata":
+        datasets = data_helpers.get_datasets_localdata(container_path=cfg["datasets"][dataset_name]["container_path"],
+                                                       categories=cfg["datasets"][dataset_name]["categories"],
+                                                       shuffle=cfg["datasets"][dataset_name]["shuffle"],
+                                                       random_state=cfg["datasets"][dataset_name]["random_state"])
+        
     x_raw, y_test = data_helpers.load_data_labels(datasets)
     y_test = np.argmax(y_test, axis=1)
     print("Total number of test examples: {}".format(len(y_test)))
 else:
     print("Flow shouldn't be here.")
-    if dataset_name == "mrpolarity":
-        datasets = {"target_names": ['positive_examples', 'negative_examples']}
-        x_raw = ["a masterpiece four years in the making", "everything is off."]
-        y_test = [1, 0]
-    else:
-        datasets = {"target_names": ['alt.atheism', 'comp.graphics', 'sci.med', 'soc.religion.christian']}
-        x_raw = ["The number of reported cases of gonorrhea in Colorado increased",
-                 "I am in the market for a 24-bit graphics card for a PC"]
-        y_test = [2, 1]
 
 # Map data into vocabulary
 vocab_path = os.path.join(FLAGS.checkpoint_dir, "..", "vocab")
@@ -100,18 +87,18 @@ print("\nEvaluating...\n")
 
 # Evaluation
 # ==================================================
-checkpoint_file = tf.train.latest_checkpoint(FLAGS.checkpoint_dir)
+checkpoint_file = tf.compat.v1.train.latest_checkpoint(FLAGS.checkpoint_dir)
 graph = tf.Graph()
 g=tf.get_default_graph()
 with graph.as_default():
-    tf.contrib.quantize.create_eval_graph(input_graph=g)
-    session_conf = tf.ConfigProto(
+    tf.compat.v1.contrib.quantize.create_eval_graph(input_graph=g)
+    session_conf = tf.compat.v1.ConfigProto(
       allow_soft_placement=FLAGS.allow_soft_placement,
       log_device_placement=FLAGS.log_device_placement)
-    sess = tf.Session(config=session_conf)
+    sess = tf.compat.v1.Session(config=session_conf)
     with sess.as_default():
         # Load the saved meta graph and restore variables
-        saver = tf.train.import_meta_graph("{}.meta".format(checkpoint_file))
+        saver = tf.compat.v1.train.import_meta_graph("{}.meta".format(checkpoint_file))
         saver.restore(sess, checkpoint_file)
 
         # Get the placeholders from the graph by name
